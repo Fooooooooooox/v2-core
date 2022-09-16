@@ -54,6 +54,7 @@ contract UniswapV2Factory is IUniswapV2Factory {
             // create2四个参数的意义: create new contract with code at memory p to p + n
             // 0是传入的value
             // bytecode是合约的hashcode
+            // 因为bytecode类型为bytes，根据ABI规范，bytes为变长类型，在编码时前32个字节存储bytecode的长度，接着才是bytecode的真正内容，因此合约字节码的起始位置在bytecode+32字节
             pair := create2(0, add(bytecode, 32), mload(bytecode), salt)
         }
         IUniswapV2Pair(pair).initialize(token0, token1);

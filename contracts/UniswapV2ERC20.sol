@@ -44,7 +44,9 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
     }
 
     function _burn(address from, uint value) internal {
+        // burn函数就是把你的余额减少
         balanceOf[from] = balanceOf[from].sub(value);
+        // 把总余额减少
         totalSupply = totalSupply.sub(value);
         emit Transfer(from, address(0), value);
     }
@@ -78,6 +80,12 @@ contract UniswapV2ERC20 is IUniswapV2ERC20 {
         return true;
     }
 
+    // permit的功能其实和approve很像
+    // approve是授权某个人能有权限转移你的资产 比如你在opensea上挂单想出售一个nft opensea 可能会让你setapproveforall 就是给opensea权限
+    // 这里permit意味着 token的owner将token的权限授予给一个地址，并且指定数目和截止日期
+    // 但是和approve不一样的是 permit是一种meta transaction
+    // https://docs.uniswap.org/protocol/V2/guides/smart-contract-integration/supporting-meta-transactions
+    // meta transaction的意思就是你只需要用你的钱包签名（这里的v r s就是椭圆加密算法里的参数 是你签名的时候生成的） 然后uniswap会帮你提交这个交易（所以gas fee也是uniswap帮你出的
     function permit(address owner, address spender, uint value, uint deadline, uint8 v, bytes32 r, bytes32 s) external {
         require(deadline >= block.timestamp, 'UniswapV2: EXPIRED');
         bytes32 digest = keccak256(
